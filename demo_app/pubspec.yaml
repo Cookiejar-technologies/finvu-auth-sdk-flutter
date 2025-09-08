@@ -15,7 +15,7 @@ dependencies:
   # Finvu Auth SDK Flutter wrapper
   
   cupertino_icons: ^1.0.8
-  finvu_auth_sdk_flutter: ^0.1.1
+  finvu_auth_sdk_flutter: ^1.0.0
   webview_flutter: ^4.13.0
 
 dev_dependencies:

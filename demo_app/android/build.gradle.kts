@@ -5,7 +5,7 @@ allprojects {
             url = uri("https://maven.pkg.github.com/Cookiejar-technologies/finvu-auth-sdk-android")
             credentials {
                 username = "username"
-                password = "personal_access_token"
+                password = "github_personal_access_token"
             }
         }
         mavenCentral()

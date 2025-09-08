@@ -1,5 +1,5 @@
 PODS:
-  - finvu_auth_sdk_flutter (0.1.1):
+  - finvu_auth_sdk_flutter (1.0.0):
     - FinvuAuthenticationSDK
     - Flutter
   - FinvuAuthenticationSDK (0.1.0)

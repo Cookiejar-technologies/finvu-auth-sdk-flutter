@@ -13,6 +13,7 @@ class _NativeViewPageState extends State<NativeViewPage> {
   // Constants you can edit at compile time
   static const String APP_ID = '';
   static const String REQUEST_ID = '';
+  // will be given in logingOtp respons as authMeta object's property,
 
   late final IFinvuNativeWrapper _native = FinvuAuthSdk.nativeWrapper();
 
