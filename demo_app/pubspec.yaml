@@ -1,0 +1,27 @@
+name: demo_app
+description: "Demo app for testing Finvu Auth SDK Flutter integration."
+publish_to: 'none' # Prevent accidental publishing
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Finvu Auth SDK Flutter wrapper
+  
+  cupertino_icons: ^1.0.8
+  finvu_auth_sdk_flutter: ^1.0.0
+  webview_flutter: ^4.13.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

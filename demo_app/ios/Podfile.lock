@@ -1,0 +1,41 @@
+PODS:
+  - finvu_auth_sdk_flutter (1.0.0):
+    - FinvuAuthenticationSDK
+    - Flutter
+  - FinvuAuthenticationSDK (0.1.0)
+  - Flutter (1.0.0)
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - finvu_auth_sdk_flutter (from `.symlinks/plugins/finvu_auth_sdk_flutter/ios`)
+  - FinvuAuthenticationSDK (from `https://github.com/Cookiejar-technologies/finvu-auth-sdk-ios.git`, tag `1.0.1`)
+  - Flutter (from `Flutter`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
+
+EXTERNAL SOURCES:
+  finvu_auth_sdk_flutter:
+    :path: ".symlinks/plugins/finvu_auth_sdk_flutter/ios"
+  FinvuAuthenticationSDK:
+    :git: https://github.com/Cookiejar-technologies/finvu-auth-sdk-ios.git
+    :tag: 1.0.1
+  Flutter:
+    :path: Flutter
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
+
+CHECKOUT OPTIONS:
+  FinvuAuthenticationSDK:
+    :git: https://github.com/Cookiejar-technologies/finvu-auth-sdk-ios.git
+    :tag: 1.0.1
+
+SPEC CHECKSUMS:
+  finvu_auth_sdk_flutter: 8abd4e55744ba087c9fc023bcdc2b0497206092e
+  FinvuAuthenticationSDK: 05fb9f74cd8f590fa3c074219dd65eae67259c3f
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
+
+PODFILE CHECKSUM: 68f283feaf9693e7be1d55b4c4970974ee587879
+
+COCOAPODS: 1.16.2

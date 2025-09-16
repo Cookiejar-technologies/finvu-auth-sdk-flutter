@@ -1,0 +1,28 @@
+allprojects {
+    repositories {
+        google()
+        maven {
+            url = uri("https://maven.pkg.github.com/Cookiejar-technologies/finvu-auth-sdk-android")
+            credentials {
+                username = "username"
+                password = "github_personal_access_token"
+            }
+        }
+        mavenCentral()
+    }
+}
+
+val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
+rootProject.layout.buildDirectory.value(newBuildDir)
+
+subprojects {
+    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
+    project.layout.buildDirectory.value(newSubprojectBuildDir)
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.layout.buildDirectory)
+}
