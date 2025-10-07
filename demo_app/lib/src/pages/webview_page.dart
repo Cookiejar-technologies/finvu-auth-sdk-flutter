@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
-  const WebViewPage({super.key});
+  final String? customUrl;
+
+  const WebViewPage({super.key, this.customUrl});
   @override
   State<WebViewPage> createState() => _WebViewPageState();
 }
@@ -12,7 +14,7 @@ class _WebViewPageState extends State<WebViewPage> {
   late final WebViewController _controller;
   late final IFinvuWebViewWrapper _wrapper;
   bool _ready = false;
-  static const _webUrl = 'https://test-web-app-8a50c.web.app/?v=debug-1';
+  static const _defaultWebUrl = 'https://test-web-app-8a50c.web.app/?v=debug-1';
 
   @override
   void initState() {
@@ -28,7 +30,10 @@ class _WebViewPageState extends State<WebViewPage> {
       env: Environment.development,
       controller: _controller,
     );
-    await _controller.loadRequest(Uri.parse(_webUrl));
+    final String urlToLoad = widget.customUrl?.isNotEmpty == true
+        ? widget.customUrl!
+        : _defaultWebUrl;
+    await _controller.loadRequest(Uri.parse(urlToLoad));
     setState(() => _ready = true);
   }
 
