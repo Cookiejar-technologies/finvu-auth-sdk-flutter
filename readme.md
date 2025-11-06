@@ -64,7 +64,7 @@ Then run:
 flutter pub get
 ```
 
-> Note: latest flutter-sdk-version is 1.0.0
+> Note: latest flutter-sdk-version is 1.0.1
 
 ### Platform Setup
 
@@ -120,7 +120,7 @@ platform :ios, '16.0'
 pod 'FinvuAuthenticationSDK', :git => 'https://github.com/Cookiejar-technologies/finvu-auth-sdk-ios.git', :tag => 'latest-ios-sdk-version'
 ```
 
-> Note: latest-ios-sdk-version is 1.0.1
+> Note: latest-ios-sdk-version is 1.0.2
 
 2. Install pods:
 
