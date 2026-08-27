@@ -12,10 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Finvu Auth SDK Flutter wrapper
-  
   cupertino_icons: ^1.0.8
-  finvu_auth_sdk_flutter: ^1.0.0
+  # Published SDK, resolved from pub.dev. This is what a real integrator gets.
+  finvu_authentication_sdk: ^1.0.0
   webview_flutter: ^4.13.0
 
 dev_dependencies:
