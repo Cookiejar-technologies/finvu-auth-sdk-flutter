@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:finvu_auth_sdk_flutter/finvu_auth_sdk.dart';
+import 'package:finvu_authentication_sdk/finvu_authentication_sdk.dart';
 import 'package:flutter/material.dart';
 
 class NativeViewPage extends StatefulWidget {
@@ -11,9 +11,8 @@ class NativeViewPage extends StatefulWidget {
 
 class _NativeViewPageState extends State<NativeViewPage> {
   // Constants you can edit at compile time
-  static const String APP_ID = '';
-  static const String REQUEST_ID = '';
-  // will be given in logingOtp respons as authMeta object's property,
+  static const String entityId = '';
+  static const String requestId = '';
 
   late final IFinvuNativeWrapper _native = FinvuAuthSdk.nativeWrapper();
 
@@ -48,7 +47,7 @@ class _NativeViewPageState extends State<NativeViewPage> {
 
     try {
       final res = await _native.initAuth(
-        InitConfig(appId: APP_ID, requestId: REQUEST_ID),
+        InitConfig(requestId: requestId, entityId: entityId),
       );
 
       setState(() {
@@ -109,11 +108,10 @@ class _NativeViewPageState extends State<NativeViewPage> {
     }
   }
 
-  Future<bool> _onWillPop() async {
+  Future<void> _onPop() async {
     try {
       await _native.cleanupAll();
     } catch (_) {}
-    return true;
   }
 
   @override
@@ -122,8 +120,8 @@ class _NativeViewPageState extends State<NativeViewPage> {
     final isInitBusy = _busy == 'init';
     final isStartBusy = _busy == 'start';
 
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      onPopInvokedWithResult: (_, __) => _onPop(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Finvu Auth — Native View'),
