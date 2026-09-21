@@ -51,8 +51,8 @@ class _NativeViewPageState extends State<NativeViewPage> {
       );
 
       setState(() {
-        _lastResponse = _toDisplayMap(res);
-        _initDone = res.status == FinvuStatus.success;
+        _lastResponse = res;
+        _initDone = res['error'] == null;
       });
     } catch (e) {
       setState(() {
@@ -74,7 +74,7 @@ class _NativeViewPageState extends State<NativeViewPage> {
     try {
       final res = await _native.startAuth(_phoneCtrl.text.trim());
       setState(() {
-        _lastResponse = _toDisplayMap(res);
+        _lastResponse = res;
       });
     } catch (e) {
       setState(() {
@@ -86,27 +86,6 @@ class _NativeViewPageState extends State<NativeViewPage> {
   }
 
   bool get _canStart => _initDone && _phoneCtrl.text.trim().isNotEmpty;
-
-  Map<String, Object?> _toDisplayMap(FinvuAuthResult r) {
-    if (r.status == FinvuStatus.success) {
-      return {
-        'status': 'SUCCESS',
-        if (r.data?.token != null) 'token': r.data!.token,
-        if (r.data?.authType != null) 'authType': r.data!.authType,
-        ...r.data?.extra ?? const {},
-      };
-    } else {
-      return {
-        'error': {
-          'status': 'FAILURE',
-          if (r.error?.errorCode != null) 'errorCode': r.error!.errorCode,
-          if (r.error?.errorMessage != null)
-            'errorMessage': r.error!.errorMessage,
-          ...r.error?.details ?? const {},
-        },
-      };
-    }
-  }
 
   Future<void> _onPop() async {
     try {

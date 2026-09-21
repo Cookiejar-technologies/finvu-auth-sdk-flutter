@@ -61,10 +61,10 @@ packages:
     dependency: "direct main"
     description:
       name: finvu_authentication_sdk
-      sha256: "9972dd4f9fe7cf10173b7b59b115a30a5264ec4cb7db094ea117352d54982e73"
+      sha256: f419d0a286f926e71a12fb9c4f99918216769ad2bc4c9e21e3b280fbc30aae63
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.2"
   flutter:
     dependency: "direct main"
     description: flutter
