@@ -1,9 +1,9 @@
 # Finvu Auth SDK — Flutter
 
 **Package:** `finvu_authentication_sdk`  
-**Version:** `1.0.0` · **Flutter:** 3.32+ · **iOS:** 16.0+ · **Android:** API 25+
+**Version:** `1.0.3` · **Flutter:** 3.32+ · **iOS:** 16.0+ · **Android:** API 25+
 
-Silent Network Authentication (SNA) SDK for Flutter, with WebView bridge support for web-based authentication flows.
+Silent Network Authentication (SNA) and device binding SDK for Flutter, with WebView bridge support for web-based authentication flows.
 
 > SNA verifies the number over the carrier's mobile data connection, so it requires **mobile data ON** and **Wi-Fi OFF**. If those conditions are not met, the flow falls back to OTP automatically.
 
@@ -52,6 +52,16 @@ Add to your `<application>` tag in `AndroidManifest.xml`:
 
 > Required for Silent Network Authentication (SNA) to make carrier-specific HTTP calls. The config file ships inside the SDK — you only reference it.
 
+#### 3. FlutterFragmentActivity (device binding)
+
+Device binding shows the system device-lock prompt, which needs a `FragmentActivity`. Make your `MainActivity` extend `FlutterFragmentActivity` instead of `FlutterActivity`:
+
+```kotlin
+import io.flutter.embedding.android.FlutterFragmentActivity
+
+class MainActivity : FlutterFragmentActivity()
+```
+
 ---
 
 ### iOS
@@ -95,6 +105,15 @@ Add the following to your `Info.plist`:
         </dict>
     </dict>
 </dict>
+```
+
+#### Info.plist — Face ID (device binding)
+
+Device binding confirms the user with Face ID, Touch ID or the device passcode. Add a usage description to your `Info.plist`:
+
+```xml
+<key>NSFaceIDUsageDescription</key>
+<string>Confirms it is you before signing in with this device.</string>
 ```
 
 ---
@@ -151,7 +170,29 @@ class _AuthScreenState extends State<AuthScreen> {
 }
 ```
 
-Your web app communicates with the SDK through the `finvu_authentication_bridge` JS channel.
+Your web app communicates with the SDK through the `finvu_authentication_bridge` JS channel. Flutter's channel only exposes `postMessage(String)`, so each call goes as a JSON envelope:
+
+```js
+window.finvu_authentication_bridge.postMessage(JSON.stringify({
+  method: 'startAuth',
+  snaLink: snaLink,
+  callback: 'handleStartAuthResponse',
+}));
+
+// The callback must be a global function on window. It receives a JSON string.
+window.handleStartAuthResponse = function (json) {
+  const res = JSON.parse(json);
+};
+```
+
+| `method` | Payload key |
+|---|---|
+| `initAuth` / `initSNA` | `initConfig` (object or JSON string) |
+| `startAuth` / `startSNA` | `snaLink` |
+| `getDeviceBindingState`, `enrollDeviceBinding`, `signDeviceBindingChallenge` | `config` (object or JSON string, passed to the native SDK unchanged) |
+| `getCapabilities` | none |
+
+Call `setupWebView` before `loadRequest`, so the channel exists when the page loads. An unknown `method` gets an `UNSUPPORTED_METHOD` failure.
 
 ---
 
@@ -174,13 +215,56 @@ final initResult = await native.initAuth(
 
 // 3. Start SNA — call with the SNA URL returned by your backend
 final authResult = await native.startAuth('SNA_URL');
-// auth complete — use authResult.data?.token
+if (authResult['status'] == 'FAILURE') {
+  print('${authResult['errorCode']}: ${authResult['errorMessage']}');
+} else {
+  final snaToken = authResult['snaToken'];
+}
 
 // 4. Cleanup — call when done or user exits
 await native.cleanupAll();
 ```
 
-Calls return a `FinvuAuthResult` rather than throwing: check `status`, then read `data` or `error`.
+Every call returns a `Map<String, dynamic>`: the native Android/iOS SDK's own JSON response, unchanged. Calls don't throw. A failure is `{"status": "FAILURE", "errorCode": ..., "errorMessage": ...}`.
+
+#### Device binding
+
+Each config is a plain map, passed to the native SDK unchanged.
+
+```dart
+// Is the key from an earlier enrollment still usable? Local only, no prompt.
+final state = await native.getDeviceBindingState({'keyId': savedKeyId});
+// state['state']: NOT_ENROLLED, ENROLLED, INVALIDATED, UNSUPPORTED or NO_SCREEN_LOCK
+
+// Prompt for the device lock and create a key pair.
+// Store enrolled['keyId'] and enrolled['publicKey'] on your backend.
+final enrolled = await native.enrollDeviceBinding({
+  'requestId': requestId,
+  'attestationChallenge': serverNonce, // optional, used on Android only
+});
+
+// Prompt for the device lock and sign a server-issued challenge
+// with whichever of the user's keys exists on this device.
+final signed = await native.signDeviceBindingChallenge({
+  'allowedKeyIds': [savedKeyId],
+  'challenge': serverChallenge,
+  'requestId': requestId,
+});
+// Send signed['keyId'] and signed['signature'] to your backend to verify.
+
+// What this installed SDK build supports.
+final caps = await native.getCapabilities();
+```
+
+`enrollDeviceBinding` and `signDeviceBindingChallenge` also accept `entityId`, `promptTitle` and `promptSubtitle`.
+
+---
+
+## Upgrading from 1.0.2
+
+- Failures now come back flat as `{"status": "FAILURE", "errorCode", "errorMessage"}` instead of `{"error": {...}}`. Check `result['status'] == 'FAILURE'`.
+- For device binding, add `FlutterFragmentActivity` on Android and `NSFaceIDUsageDescription` on iOS (see Platform Setup).
+- The native SDKs are now Android `1.1.4` and iOS `1.1.3`. Run `cd ios && pod install --repo-update` after upgrading.
 
 ## Demo App
 
